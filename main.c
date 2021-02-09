@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include "SymbolTable.h"
 #define wordlength 50
 
 int filename = 1;
@@ -18,8 +19,11 @@ int main(int argc, char *argv[])
     FILE *file = getFile(argv[filename]);
     lexan(file);
     lexan(file);
-    printf("%s\n", idLexeme);
-    printf("%s \n", number);
+    lexan(file);
+    // printf("%s\n", idLexeme);
+    // printf("%s \n", number);
+   
+    printLexemes();
 }
 
 FILE *getFile(char file[])
@@ -46,11 +50,21 @@ int lexan(FILE *file)
         else if (isdigit(ch))
         {
             getNumber(ch, file);
+            return NUM;
         }
         else if (isalpha(ch))
         {
             getIdentifier(ch, file);
-            break;
+            int type = lookup(idLexeme);
+            if (type == NOT_FOUND)
+            {
+                insert(idLexeme, ID);
+                return ID;
+            }
+            else
+            {
+                return type;
+            }
         }
     }
     return 0;
@@ -69,12 +83,12 @@ void getIdentifier(char ch, FILE *file)
         if (isalpha(ch) || isdigit(ch) || ch == '_')
         {
             idLexeme[count++] = ch;
-            previous = ch;
-            if (previous == '_')
+            if (previous == '_' && ch =='_')
             {
                 printf("%s %d %s\n", "error on line", lineNumber, "illegal identifier");
                 break;
             }
+             previous = ch;
         }
 
         else
