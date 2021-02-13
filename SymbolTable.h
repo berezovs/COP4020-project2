@@ -6,8 +6,8 @@
 #define FOUND 403
 #define ID 300
 #define NUM 301
-#define WORDLENGTH 50
-#define WORDCOUNT 1000
+#define PERIOD 299
+
 
 void insert(char lexeme[] , int id);
 void printLexemes();

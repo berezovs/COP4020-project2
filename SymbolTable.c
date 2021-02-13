@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "SymbolTable.h"
+#include "Globals.h"
 
 int counter = 0;
 
@@ -26,7 +27,7 @@ int lookup(char lexeme[])
     {
         if (strcmp(table[i].lexeme, lexeme)==0)
         {
-            return FOUND;
+            return table[i].id;
         }
     }
     return NOT_FOUND;

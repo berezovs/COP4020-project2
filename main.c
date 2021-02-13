@@ -1,135 +1,43 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
+#include "Lexan.h"
 #include "SymbolTable.h"
-#define wordlength 50
-
-int filename = 1;
-int lineNumber = 1;
-char number[wordlength];
-char idLexeme[wordlength];
-
-FILE *getFile(char file[]);
-int lexan(FILE *file);
-void getIdentifier(char ch, FILE *file);
-void getNumber(char ch, FILE *file);
-void ignoreLine(char ch, FILE *file);
+#include "Parser.h"
 
 int main(int argc, char *argv[])
 {
-    FILE *file = getFile(argv[filename]);
-    lexan(file);
-    lexan(file);
-    lexan(file);
+    setFile(argv[1]);
+    insert("begin", BEGIN);
+    insert("end", END);
+    insert(".", PERIOD);
+
+    getFirstToken();
+
+    if (match(BEGIN))
+    {
+        while (!isEndOfFile())
+        {
+            if(strcmp(getCurrentLexeme(), "end")==0)
+                break;
+            //printf("Matched begin \n");
+            assignStatement();
+            // int i = lookup("serghei");
+            // printf("%d \n", i);}
+        }
+    }
+    else
+    {
+        printf("Syntax error, 'begin' expected \n");
+        return 0;
+    }
+
+    getFirstToken();
+    if(!match('.')){
+        printf("Period expected");
+    }
     // printf("%s\n", idLexeme);
     // printf("%s \n", number);
-   
-    printLexemes();
-}
 
-FILE *getFile(char file[])
-{
-    FILE *fp;
-    fp = fopen(file, "r");
-    return fp;
-}
-
-int lexan(FILE *file)
-{
-    char ch;
-
-    while ((ch = fgetc(file)) != EOF)
-    {
-        if (ch == ' ' || ch == '\t')
-            continue;
-        else if (ch == '\n')
-            lineNumber++;
-        else if (ch == '~')
-        {
-            ignoreLine(ch, file);
-        }
-        else if (isdigit(ch))
-        {
-            getNumber(ch, file);
-            return NUM;
-        }
-        else if (isalpha(ch))
-        {
-            getIdentifier(ch, file);
-            int type = lookup(idLexeme);
-            if (type == NOT_FOUND)
-            {
-                insert(idLexeme, ID);
-                return ID;
-            }
-            else
-            {
-                return type;
-            }
-        }
-    }
-    return 0;
-}
-
-void getIdentifier(char ch, FILE *file)
-{
-    int count = 0;
-    idLexeme[count++] = ch;
-    char previous = 0;
-
-    while (1)
-    {
-
-        ch = fgetc(file);
-        if (isalpha(ch) || isdigit(ch) || ch == '_')
-        {
-            idLexeme[count++] = ch;
-            if (previous == '_' && ch =='_')
-            {
-                printf("%s %d %s\n", "error on line", lineNumber, "illegal identifier");
-                break;
-            }
-             previous = ch;
-        }
-
-        else
-        {
-            idLexeme[count] = '\0';
-            if (idLexeme[count - 1] == '_')
-            {
-                printf("%s %d %s\n", "error on line", lineNumber, "illegal identifier");
-            }
-
-            ungetc(ch, file);
-            break;
-        }
-    }
-}
-
-void getNumber(char ch, FILE *file)
-{
-    int count = 0;
-    number[count++] = ch;
-    while (1)
-    {
-        ch = fgetc(file);
-        if (isdigit(ch))
-        {
-            number[count++] = ch;
-        }
-        else
-        {
-            number[count] = '\0';
-            ungetc(ch, file);
-            break;
-        }
-    }
-}
-
-void ignoreLine(char ch, FILE *file)
-{
-    while ((ch = fgetc(file)) != '\n')
-    {
-        continue;
-    }
-    ungetc(ch, file);
+    
 }
