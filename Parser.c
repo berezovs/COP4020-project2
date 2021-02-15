@@ -3,20 +3,19 @@
 #include "Lexan.h"
 #include "Globals.h"
 #include "SymbolTable.h"
+#include "Error.h"
 
 int lookahead;
 
-void getFirstToken()
+void getNextToken()
 {
     lookahead = lexan();
-    //printf("First token: %d\n", lookahead);
 }
 
 int match(int t)
 {
     if (lookahead == t)
     {
-        //printf("Matched: %d\n", lookahead);
         lookahead = lexan();
 
         return 1;
@@ -24,7 +23,22 @@ int match(int t)
     else
     {
 
-        printf("Error on line: %d\n", getLineNumber());
+        if (t == BEGIN)
+        {
+            setErrorCode(MISSING_BEGIN, getLineNumber());
+        }
+        else if (t == END)
+        {
+            setErrorCode(MISSING_END, getLineNumber());
+        }
+        else if (t == ')')
+        {
+            setErrorCode(MISSING_CLOSING_PAR, getLineNumber());
+        }
+        else if(t=='.'){
+            setErrorCode(MISSING_PERIOD, getLineNumber());
+        }
+
         return 0;
     }
 }
@@ -34,7 +48,7 @@ void assignStatement()
     match(ID);
     if (lookahead != '=')
     {
-        printf("Expected assignment operator");
+        setErrorCode(MISSING_ASSIGN_OPERATOR, getLineNumber());
     }
     else
     {

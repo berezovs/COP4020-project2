@@ -4,40 +4,58 @@
 #include "Lexan.h"
 #include "SymbolTable.h"
 #include "Parser.h"
+#include "Error.h"
+#include "Globals.h"
 
 int main(int argc, char *argv[])
 {
     setFile(argv[1]);
     insert("begin", BEGIN);
     insert("end", END);
+    insert(";", SEMICOLON);
     insert(".", PERIOD);
 
-    getFirstToken();
+    getNextToken();
+    printf("Running %s\n", argv[1]);
 
     if (match(BEGIN))
     {
         while (!isEndOfFile())
         {
-            if(strcmp(getCurrentLexeme(), "end")==0)
+            if (strcmp(getCurrentLexeme(), "end") == 0)
+            {
                 break;
-            //printf("Matched begin \n");
+            }
             assignStatement();
-            // int i = lookup("serghei");
-            // printf("%d \n", i);}
+
+            if (getErrorStatus() == 1)
+            {
+                printError();
+                printf("\n\n");
+                return 0;
+            }
         }
+        if (match(END))
+        {
+            if (!match('.'))
+                setErrorCode(MISSING_PERIOD, getLineNumber());
+        }
+        else
+        {
+            setErrorCode(MISSING_END, getLineNumber());
+        }
+    }
+
+    if (getErrorStatus() == 1)
+    {
+        printError();
     }
     else
     {
-        printf("Syntax error, 'begin' expected \n");
-        return 0;
+        printf("Success \t\n");
+        printLexemes();
     }
 
-    getFirstToken();
-    if(!match('.')){
-        printf("Period expected");
-    }
-    // printf("%s\n", idLexeme);
-    // printf("%s \n", number);
-
-    
+    printf("\n\n");
+    return 0;
 }

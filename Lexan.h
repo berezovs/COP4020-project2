@@ -2,8 +2,6 @@
 #ifndef LEXAN_H
 #define LEXAN_H
 
-#define wordlength 50
-
 void setFile(char file[]);
 int isEndOfFile();
 int lexan();

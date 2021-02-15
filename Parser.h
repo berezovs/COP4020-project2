@@ -1,6 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
-    void getFirstToken();
+    void getNextToken();
     void assignStatement();
     void expression();
     void term();

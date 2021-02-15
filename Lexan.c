@@ -2,9 +2,11 @@
 #include <ctype.h>
 #include "Lexan.h"
 #include "SymbolTable.h"
+#include "Globals.h"
+#include "Error.h"
 int lineNumber = 1;
-char number[wordlength];
-char idLexeme[wordlength];
+char number[WORDLENGTH];
+char idLexeme[WORDLENGTH];
 FILE *fp;
 char ch;
 
@@ -71,7 +73,6 @@ int lexan()
             return ch;
         }
     }
-    printf("End of file");
     return 0;
 }
 
@@ -90,7 +91,7 @@ void getIdentifier(char ch, FILE *file)
             idLexeme[count++] = ch;
             if (previous == '_' && ch == '_')
             {
-                printf("%s %d %s\n", "error on line", lineNumber, "illegal identifier\n");
+                setErrorCode(ILLEGAL_IDENTIFIER, getLineNumber());
             }
             previous = ch;
         }
@@ -100,7 +101,8 @@ void getIdentifier(char ch, FILE *file)
             idLexeme[count] = '\0';
             if (idLexeme[count - 1] == '_')
             {
-                printf("%s %d %s\n", "error on line", lineNumber, "illegal identifier\n");
+                 setErrorCode(ILLEGAL_IDENTIFIER, getLineNumber());
+                 break;
             }
 
             ungetc(ch, file);
