@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "Parser.h"
 #include "Lexan.h"
 #include "Globals.h"
@@ -6,6 +7,27 @@
 #include "Error.h"
 
 int lookahead;
+
+void run()
+{
+    if (match(BEGIN))
+    {
+        while (!isEndOfFile())
+        {
+            if (strcmp(getCurrentLexeme(), "end") == 0)
+            {
+                break;
+            }
+            assignStatement();
+
+            if (getErrorStatus() == 1)
+            {
+                return;
+            }
+        }
+        matchEnd();
+    }
+}
 
 void getNextToken()
 {
@@ -35,7 +57,8 @@ int match(int t)
         {
             setErrorCode(MISSING_CLOSING_PAR, getLineNumber());
         }
-        else if(t=='.'){
+        else if (t == '.')
+        {
             setErrorCode(MISSING_PERIOD, getLineNumber());
         }
 
@@ -97,5 +120,18 @@ void factor()
     else
     {
         printf("Error occured");
+    }
+}
+
+void matchEnd()
+{
+    if (match(END))
+    {
+        if (!match('.'))
+            setErrorCode(MISSING_PERIOD, getLineNumber());
+    }
+    else
+    {
+        setErrorCode(MISSING_END, getLineNumber());
     }
 }

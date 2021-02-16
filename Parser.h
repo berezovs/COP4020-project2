@@ -6,5 +6,7 @@
     void term();
     void factor();
     int match(int t);
+    void matchEnd();
+    void run();
 #endif
 

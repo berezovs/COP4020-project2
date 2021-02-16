@@ -7,6 +7,7 @@
 #include "Error.h"
 #include "Globals.h"
 
+
 int main(int argc, char *argv[])
 {
     setFile(argv[1]);
@@ -17,35 +18,8 @@ int main(int argc, char *argv[])
 
     getNextToken();
     printf("Running %s\n", argv[1]);
-
-    if (match(BEGIN))
-    {
-        while (!isEndOfFile())
-        {
-            if (strcmp(getCurrentLexeme(), "end") == 0)
-            {
-                break;
-            }
-            assignStatement();
-
-            if (getErrorStatus() == 1)
-            {
-                printError();
-                printf("\n\n");
-                return 0;
-            }
-        }
-        if (match(END))
-        {
-            if (!match('.'))
-                setErrorCode(MISSING_PERIOD, getLineNumber());
-        }
-        else
-        {
-            setErrorCode(MISSING_END, getLineNumber());
-        }
-    }
-
+    run();
+    
     if (getErrorStatus() == 1)
     {
         printError();
@@ -59,3 +33,4 @@ int main(int argc, char *argv[])
     printf("\n\n");
     return 0;
 }
+
