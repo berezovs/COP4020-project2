@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #include "Lexan.h"
 #include "SymbolTable.h"
 #include "Globals.h"
@@ -10,7 +11,8 @@ char idLexeme[WORDLENGTH];
 FILE *fp;
 char ch;
 
-int getLineNumber(){
+int getLineNumber()
+{
     return lineNumber;
 }
 
@@ -28,7 +30,8 @@ int isEndOfFile()
         return 0;
 }
 
-char* getCurrentLexeme(){
+char *getCurrentLexeme()
+{
     return idLexeme;
 }
 
@@ -76,24 +79,84 @@ int lexan()
     return 0;
 }
 
-void getIdentifier(char ch, FILE *file)
+void getDeclarations()
+{
+    while ((ch = fgetc(fp)) != EOF)
+    {
+        if (ch == ' ' || ch == '\t')
+            continue;
+        else if (ch == '\n')
+        {
+            lineNumber++;
+            continue;
+        }
+
+        else if (ch == '~')
+        {
+            ignoreLine(ch, fp);
+        }
+        else if (isdigit(ch))
+        {
+            getNumber(ch, fp);
+        }
+        else if (isalpha(ch))
+        {
+            getIdentifier(ch, fp);
+            if (strcmp(idLexeme, "int") == 0)
+            {
+                getVariables();
+            }
+            
+        }
+    }
+    printLexemes();
+}
+
+void getVariables()
+{
+
+    while ((ch = fgetc(fp)) != ';')
+    {
+        if (isspace(ch))
+            continue;
+        getIdentifier(ch, fp);
+        if (strcmp(idLexeme, ",") == 0)
+            continue;
+
+        if (lookup(idLexeme) == NOT_FOUND)
+            insert(idLexeme, ID);
+        else
+        {
+            setErrorCode(ILLEGAL_REDEFINITION, lineNumber);
+            break;
+        }
+        //printf("%s\n", idLexeme);
+    }
+
+    // getIdentifier(ch, fp);
+    // printf("%s\n", idLexeme);
+    // getIdentifier(ch, fp);
+    // printf("%s\n", idLexeme);
+}
+
+void getIdentifier(char chr, FILE *file)
 {
     int count = 0;
-    idLexeme[count++] = ch;
+    idLexeme[count++] = chr;
     char previous = 0;
 
     while (1)
     {
 
-        ch = fgetc(file);
-        if (isalpha(ch) || isdigit(ch) || ch == '_')
+        chr = fgetc(file);
+        if (isalpha(chr) || isdigit(chr) || chr == '_')
         {
-            idLexeme[count++] = ch;
-            if (previous == '_' && ch == '_')
+            idLexeme[count++] = chr;
+            if (previous == '_' && chr == '_')
             {
                 setErrorCode(ILLEGAL_IDENTIFIER, getLineNumber());
             }
-            previous = ch;
+            previous = chr;
         }
 
         else
@@ -101,11 +164,11 @@ void getIdentifier(char ch, FILE *file)
             idLexeme[count] = '\0';
             if (idLexeme[count - 1] == '_')
             {
-                 setErrorCode(ILLEGAL_IDENTIFIER, getLineNumber());
-                 break;
+                setErrorCode(ILLEGAL_IDENTIFIER, getLineNumber());
+                break;
             }
 
-            ungetc(ch, file);
+            ungetc(chr, file);
             break;
         }
     }

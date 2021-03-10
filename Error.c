@@ -34,6 +34,9 @@ void printError()
     case MISSING_PERIOD:
         printf("Syntax error: expected '.' on line %d\n", lNumber);
         break;
+    case ILLEGAL_REDEFINITION:
+        printf("Syntax error: illegal variable redefinition on line %d\n", lNumber);
+        break;
     default:
         printf("Syntax error: unexpected token on line %d\n", lNumber);
     }

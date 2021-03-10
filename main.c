@@ -16,9 +16,10 @@ int main(int argc, char *argv[])
     insert(";", SEMICOLON);
     insert(".", PERIOD);
 
-    getNextToken();
+    //getNextToken();
     printf("Running %s\n", argv[1]);
-    run();
+    //run();
+    getDeclarations();
     
     if (getErrorStatus() == 1)
     {
