@@ -1,12 +1,6 @@
 
 begin
-int a,b;
-~this is a comment
 
-int f, g;
-~this is another comment
-int c;
-int h;
 
 a=h+(b+c)+(c-h);
 end.

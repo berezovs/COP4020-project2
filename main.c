@@ -18,10 +18,15 @@ int main(int argc, char *argv[])
     insert("int", INT);
     insert("=", EQUAL_SIGN);
 
+
+    printf("Compiling %s\n", argv[1]);
     getNextToken();
     if(strcmp(getCurrentLexeme(), "begin")==0){
         getDeclarations();
         run();
+    }
+    else{
+        setErrorCode(MISSING_BEGIN, getLineNumber());
     }
     
     if (getErrorStatus() == 1)
