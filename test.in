@@ -1,7 +1,12 @@
-int abcde, b;
+
+begin
+int a,b;
 ~this is a comment
 
-int a, b;
+int f, g;
 ~this is another comment
 int c;
-int f;
+int h;
+
+a=h+(b+c)+(c-h);
+end.

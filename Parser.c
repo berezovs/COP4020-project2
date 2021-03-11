@@ -10,23 +10,24 @@ int lookahead;
 
 void run()
 {
-    if (match(BEGIN))
-    {
-        while (!isEndOfFile())
-        {
-            if (strcmp(getCurrentLexeme(), "end") == 0)
-            {
-                break;
-            }
-            assignStatement();
 
-            if (getErrorStatus() == 1)
-            {
-                return;
-            }
+    while (!isEndOfFile())
+    {
+        if (strcmp(getCurrentLexeme(), "end") == 0)
+        {
+            break;
         }
-        matchEnd();
+
+        lookahead = lookup(getCurrentLexeme());
+
+        assignStatement();
+
+        if (getErrorStatus() == 1)
+        {
+            return;
+        }
     }
+    matchEnd();
 }
 
 void getNextToken()
@@ -61,6 +62,10 @@ int match(int t)
         {
             setErrorCode(MISSING_PERIOD, getLineNumber());
         }
+        else if (t == ID)
+        {
+            setErrorCode(UNDEFINED_VARIABLE, getLineNumber());
+        }
 
         return 0;
     }
@@ -68,7 +73,9 @@ int match(int t)
 
 void assignStatement()
 {
-    match(ID);
+    if (!match(ID))
+        return;
+
     if (lookahead != '=')
     {
         setErrorCode(MISSING_ASSIGN_OPERATOR, getLineNumber());
@@ -117,6 +124,9 @@ void factor()
         expression();
         match(')');
     }
+    else if(lookahead==NOT_FOUND){
+        setErrorCode(UNDEFINED_VARIABLE, getLineNumber());
+    }
     else
     {
         printf("Error occured");
@@ -125,11 +135,25 @@ void factor()
 
 void matchEnd()
 {
-    if (match(END))
+    if (strcmp(getCurrentLexeme(), "end") == 0)
     {
+        lookahead = lexan();
         if (!match('.'))
+        {
             setErrorCode(MISSING_PERIOD, getLineNumber());
+            return;
+        }
     }
+    else if (match(END))
+    {
+
+        if (!match('.'))
+        {
+            setErrorCode(MISSING_PERIOD, getLineNumber());
+            return;
+        }
+    }
+
     else
     {
         setErrorCode(MISSING_END, getLineNumber());

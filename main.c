@@ -15,11 +15,14 @@ int main(int argc, char *argv[])
     insert("end", END);
     insert(";", SEMICOLON);
     insert(".", PERIOD);
+    insert("int", INT);
+    insert("=", EQUAL_SIGN);
 
-    //getNextToken();
-    printf("Running %s\n", argv[1]);
-    //run();
-    getDeclarations();
+    getNextToken();
+    if(strcmp(getCurrentLexeme(), "begin")==0){
+        getDeclarations();
+        run();
+    }
     
     if (getErrorStatus() == 1)
     {

@@ -8,6 +8,7 @@
 #define MISSING_SEMICOLON 605
 #define MISSING_PERIOD 606
 #define ILLEGAL_REDEFINITION 607
+#define UNDEFINED_VARIABLE 608
 
 void setErrorCode(int code, int lineNo);
 void printError();

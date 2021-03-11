@@ -7,7 +7,9 @@
 #define ID 300
 #define NUM 301
 #define PERIOD 299
+#define EQUAL_SIGN 297
 #define SEMICOLON 298
+#define INT 299
 
 void insert(char lexeme[], int id);
 void printLexemes();

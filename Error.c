@@ -4,13 +4,18 @@
 
 int errorCode = -1;
 int errorStatus = 0;
+int flag = 0;
 int lNumber = 0;
 
 void setErrorCode(int code, int lineNo)
 {
-    errorCode = code;
-    errorStatus = 1;
-    lNumber = lineNo;
+    if (flag == 0)
+    {
+        errorCode = code;
+        errorStatus = 1;
+        lNumber = lineNo;
+        flag = 1;
+    }
 }
 void printError()
 {
@@ -36,6 +41,9 @@ void printError()
         break;
     case ILLEGAL_REDEFINITION:
         printf("Syntax error: illegal variable redefinition on line %d\n", lNumber);
+        break;
+    case UNDEFINED_VARIABLE:
+        printf("Syntax error: undeclared variable on line %d\n", lNumber);
         break;
     default:
         printf("Syntax error: unexpected token on line %d\n", lNumber);

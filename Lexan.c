@@ -6,6 +6,7 @@
 #include "Globals.h"
 #include "Error.h"
 int lineNumber = 1;
+int isExecutable = 0;
 char number[WORDLENGTH];
 char idLexeme[WORDLENGTH];
 FILE *fp;
@@ -63,8 +64,7 @@ int lexan()
             int type = lookup(idLexeme);
             if (type == NOT_FOUND)
             {
-                insert(idLexeme, ID);
-                return ID;
+                return NOT_FOUND;
             }
             else
             {
@@ -81,7 +81,7 @@ int lexan()
 
 void getDeclarations()
 {
-    while ((ch = fgetc(fp)) != EOF)
+    while ((ch=fgetc(fp))!=EOF)
     {
         if (ch == ' ' || ch == '\t')
             continue;
@@ -101,15 +101,18 @@ void getDeclarations()
         }
         else if (isalpha(ch))
         {
+            
             getIdentifier(ch, fp);
             if (strcmp(idLexeme, "int") == 0)
             {
                 getVariables();
             }
-            
+            else
+            {
+                break;
+            }
         }
     }
-    printLexemes();
 }
 
 void getVariables()
@@ -119,11 +122,14 @@ void getVariables()
     {
         if (isspace(ch))
             continue;
-        getIdentifier(ch, fp);
-        if (strcmp(idLexeme, ",") == 0)
+        if(ch==',')
             continue;
+        getIdentifier(ch, fp);
+        
 
-        if (lookup(idLexeme) == NOT_FOUND)
+        if (lookup(idLexeme) == INT)
+            continue;
+        else if (lookup(idLexeme) == NOT_FOUND)
             insert(idLexeme, ID);
         else
         {
@@ -144,7 +150,6 @@ void getIdentifier(char chr, FILE *file)
     int count = 0;
     idLexeme[count++] = chr;
     char previous = 0;
-
     while (1)
     {
 
