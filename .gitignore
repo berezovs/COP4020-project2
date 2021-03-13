@@ -1,4 +1,4 @@
 git
 main
-.o
+*.o
 vscode
