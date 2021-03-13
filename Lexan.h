@@ -10,6 +10,7 @@ void getIdentifier(char ch, FILE *file);
 void getNumber(char ch, FILE *file);
 void ignoreLine(char ch, FILE *file);
 char* getCurrentLexeme();
+char *getCurrentNumber();
 void getDeclarations();
 void getVariables();
 

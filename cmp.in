@@ -1,0 +1,4 @@
+begin
+int x, y, w,z; x=y+x;
+w=x+y+z;
+end.

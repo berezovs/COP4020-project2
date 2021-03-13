@@ -36,6 +36,11 @@ char *getCurrentLexeme()
     return idLexeme;
 }
 
+char *getCurrentNumber()
+{
+    return number;
+}
+
 int lexan()
 {
 
@@ -81,7 +86,7 @@ int lexan()
 
 void getDeclarations()
 {
-    while ((ch=fgetc(fp))!=EOF)
+    while ((ch = fgetc(fp)) != EOF)
     {
         if (ch == ' ' || ch == '\t')
             continue;
@@ -101,7 +106,7 @@ void getDeclarations()
         }
         else if (isalpha(ch))
         {
-            
+
             getIdentifier(ch, fp);
             if (strcmp(idLexeme, "int") == 0)
             {
@@ -122,10 +127,9 @@ void getVariables()
     {
         if (isspace(ch))
             continue;
-        if(ch==',')
+        if (ch == ',')
             continue;
         getIdentifier(ch, fp);
-        
 
         if (lookup(idLexeme) == INT)
             continue;

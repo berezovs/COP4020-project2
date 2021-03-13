@@ -7,6 +7,10 @@
 #include "Error.h"
 
 int lookahead;
+int regCount = 0;
+int reg_x = 0;
+int reg_y = 0;
+char LHS[WORDCOUNT];
 
 void run()
 {
@@ -21,6 +25,8 @@ void run()
         lookahead = lookup(getCurrentLexeme());
 
         assignStatement();
+        regCount = 0;
+        printf("%s=R%d\n\n", LHS, regCount);
 
         if (getErrorStatus() == 1)
         {
@@ -73,6 +79,7 @@ int match(int t)
 
 void assignStatement()
 {
+    strcpy(LHS, getCurrentLexeme());
     if (!match(ID))
         return;
 
@@ -93,8 +100,11 @@ void expression()
     term();
     while (lookahead == '+' || lookahead == '-')
     {
+        char operand = lookahead;
         match(lookahead);
         term();
+        printf("R%d = R%d %c R%d\n", regCount - 2, regCount - 2, operand, regCount - 1);
+        regCount--;
     }
 }
 
@@ -103,8 +113,11 @@ void term()
     factor();
     while (lookahead == '*' || lookahead == '/')
     {
+        char operand = lookahead;
         match(lookahead);
         factor();
+        printf("R%d = R%d %c R%d\n", regCount - 2, regCount - 2, operand, regCount - 1);
+        regCount--;
     }
 }
 
@@ -112,11 +125,21 @@ void factor()
 {
     if (lookahead == ID)
     {
+
         match(ID);
+
+        printf("R%d=%s\n", regCount, getCurrentLexeme());
+
+        regCount++;
     }
     else if (lookahead == NUM)
     {
+
         match(NUM);
+
+        printf("R%d=%s\n", regCount, getCurrentNumber());
+
+        regCount++;
     }
     else if (lookahead == '(')
     {
@@ -124,7 +147,8 @@ void factor()
         expression();
         match(')');
     }
-    else if(lookahead==NOT_FOUND){
+    else if (lookahead == NOT_FOUND)
+    {
         setErrorCode(UNDEFINED_VARIABLE, getLineNumber());
     }
     else

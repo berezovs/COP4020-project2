@@ -35,8 +35,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Success \t\n");
-        printLexemes();
+       // printLexemes();
     }
 
     printf("\n\n");
