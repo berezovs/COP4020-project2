@@ -7,6 +7,7 @@
     void factor();
     int match(int t);
     void matchEnd();
+    void addToPostfix(char lexeme[]); 
     void run();
 #endif
 

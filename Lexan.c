@@ -140,13 +140,8 @@ void getVariables()
             setErrorCode(ILLEGAL_REDEFINITION, lineNumber);
             break;
         }
-        //printf("%s\n", idLexeme);
+        
     }
-
-    // getIdentifier(ch, fp);
-    // printf("%s\n", idLexeme);
-    // getIdentifier(ch, fp);
-    // printf("%s\n", idLexeme);
 }
 
 void getIdentifier(char chr, FILE *file)

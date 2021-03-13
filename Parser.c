@@ -8,9 +8,9 @@
 
 int lookahead;
 int regCount = 0;
-int reg_x = 0;
-int reg_y = 0;
-char LHS[WORDCOUNT];
+char LHS[WORDLENGTH];
+char postfix[WORDLENGTH];
+int position = 0;
 
 void run()
 {
@@ -21,16 +21,20 @@ void run()
         {
             break;
         }
-
+        position = 0;
         lookahead = lookup(getCurrentLexeme());
-
         assignStatement();
         regCount = 0;
-        printf("%s=R%d\n\n", LHS, regCount);
-
+        postfix[position] = '\0';
+        printf("%s = R%d\n", LHS, regCount);
+        
         if (getErrorStatus() == 1)
         {
             return;
+        }
+        else
+        {
+            printf("*****[%s]*****\n\n", postfix);
         }
     }
     matchEnd();
@@ -79,6 +83,7 @@ int match(int t)
 
 void assignStatement()
 {
+
     strcpy(LHS, getCurrentLexeme());
     if (!match(ID))
         return;
@@ -103,6 +108,8 @@ void expression()
         char operand = lookahead;
         match(lookahead);
         term();
+        postfix[position++] = operand;
+        postfix[position++]=',';
         printf("R%d = R%d %c R%d\n", regCount - 2, regCount - 2, operand, regCount - 1);
         regCount--;
     }
@@ -116,6 +123,8 @@ void term()
         char operand = lookahead;
         match(lookahead);
         factor();
+        postfix[position++] = operand;
+        postfix[position++]=',';
         printf("R%d = R%d %c R%d\n", regCount - 2, regCount - 2, operand, regCount - 1);
         regCount--;
     }
@@ -127,8 +136,8 @@ void factor()
     {
 
         match(ID);
-
-        printf("R%d=%s\n", regCount, getCurrentLexeme());
+        addToPostfix(getCurrentLexeme());
+        printf("R%d = %s\n", regCount, getCurrentLexeme());
 
         regCount++;
     }
@@ -136,8 +145,8 @@ void factor()
     {
 
         match(NUM);
-
-        printf("R%d=%s\n", regCount, getCurrentNumber());
+        addToPostfix(getCurrentNumber());
+        printf("R%d = %s\n", regCount, getCurrentNumber());
 
         regCount++;
     }
@@ -182,4 +191,14 @@ void matchEnd()
     {
         setErrorCode(MISSING_END, getLineNumber());
     }
+}
+
+void addToPostfix(char lexeme[])
+{
+    int size  = strlen(lexeme);
+    for(int i= 0; i<size; i++){
+        postfix[position++] = lexeme[i];
+        
+    }
+    postfix[position++] = ',';
 }
