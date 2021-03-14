@@ -1,6 +1,0 @@
-
-begin
-
-int a, h,b,c;
-a=h*(b+c)+(c-h);
-end.
